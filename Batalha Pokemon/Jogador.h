@@ -6,3 +6,5 @@ struct Jogador {
     int quantPokemon, numero;
     struct Pokemon pokemon[100];
 };
+
+typedef struct Jogador Jogador;

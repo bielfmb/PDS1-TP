@@ -6,5 +6,4 @@ struct Pokemon {
     int ataque, defesa, vida;
 };
 
-
-
+typedef struct Pokemon Pokemon;
