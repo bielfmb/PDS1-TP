@@ -2,7 +2,7 @@
 #include "Pokemon.h"
 
 //cria o tipo jogador
-typedef struct {
-    int quantidadePokemon, numero;
-    Pokemon pokemon[100];
-} Jogador;
+struct Jogador {
+    int quantPokemon, numero;
+    struct Pokemon pokemon[100];
+};
