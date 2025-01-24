@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "Batalha.h"
 
@@ -9,42 +10,111 @@ int main() {
         return 1;
     }
     
-    Jogador jogador1, jogador2;
-    Jogador *j1 = &jogador1, *j2 = &jogador2;
-    int pokemon1 = fscanf(dados, "%d", &j1->quantPokemon),
-        pokemon2 = fscanf(dados, "%d", &j2->quantPokemon);
+    Jogador *j1 = malloc(sizeof(Jogador));
+    Jogador *j2 = malloc(sizeof(Jogador));
 
-    for (int i = 0; i < pokemon1 - 1; i++) {
-        fscanf(dados, "%s", j1->pokemon[i].nome);
-        fscanf(dados, "%d", &j1->pokemon[i].ataque);
-        fscanf(dados, "%d", &j1->pokemon[i].defesa);
-        fscanf(dados, "%d", &j1->pokemon[i].vida);
-        fscanf(dados, "%s", j1->pokemon[i].tipo);
+    fscanf(dados, "%d", &j1->quantPokemon);
+    fscanf(dados, "%d", &j2->quantPokemon);
+
+    j1->pokemon = malloc(j1->quantPokemon*sizeof(Pokemon));
+    j2->pokemon = malloc(j2->quantPokemon*sizeof(Pokemon));
+
+    if (j1 == NULL || j2 == NULL || j1->pokemon == NULL || j2->pokemon == NULL) {
+        printf("Falha ao alocar memória.\n");
+        return 1;
     }
 
-    for (int i = 0; i < pokemon2 - 1; i++) {
-        fscanf(dados, "%s", j2->pokemon[i].nome);
-        fscanf(dados, "%d", &j2->pokemon[i].ataque);
-        fscanf(dados, "%d", &j2->pokemon[i].defesa);
-        fscanf(dados, "%d", &j2->pokemon[i].vida);
-        fscanf(dados, "%s", j2->pokemon[i].tipo);
+    for (int i = 0; i < j1->quantPokemon; i++) {
+        j1->pokemon[i].nome = malloc(50*sizeof(char));
+        j1->pokemon[i].tipo = malloc(10*sizeof(char));
+        fscanf(dados, "%s %d %d %d %s", j1->pokemon[i].nome, 
+            &j1->pokemon[i].ataque, 
+            &j1->pokemon[i].defesa, 
+            &j1->pokemon[i].vida, 
+            j1->pokemon[i].tipo);
     }
+
+    for (int i = 0; i < j2->quantPokemon; i++) {
+        j2->pokemon[i].nome = malloc(50*sizeof(char));
+        j2->pokemon[i].tipo = malloc(10*sizeof(char));
+        fscanf(dados, "%s %d %d %d %s", j2->pokemon[i].nome, 
+            &j2->pokemon[i].ataque, 
+            &j2->pokemon[i].defesa, 
+            &j2->pokemon[i].vida, 
+            j2->pokemon[i].tipo);
+    }
+
+    // for (int i = 0; i < j1->quantPokemon; i++)
+    // {
+    //     printf("%s %d %d %d %s", j1->pokemon[i].nome, 
+    //         j1->pokemon[i].ataque, 
+    //         j1->pokemon[i].defesa, 
+    //         j1->pokemon[i].vida, 
+    //         j1->pokemon[i].tipo);
+    //         printf("\n");
+    // }
+    // printf("\njogador 2:");
+    // for (int i = 0; i < j1->quantPokemon; i++)
+    // {
+    //     printf("%s %d %d %d %s", j2->pokemon[i].nome, 
+    //         j2->pokemon[i].ataque, 
+    //         j2->pokemon[i].defesa, 
+    //         j2->pokemon[i].vida, 
+    //         j2->pokemon[i].tipo);
+    //         printf("\n");
+    // }
+    // printf("\n\n");
 
     resultado(j1, j2);
 
-    printf("Pokemon derrotados: ");
-    for (int i = 0; i < j1->quantPokemon + j2->quantPokemon; i++) {
-        if (j1->pokemon[i].vida <= 0) printf("%s\n", j1->pokemon[i].nome);
-        else if (j2->pokemon[i].vida <= 0) printf("%s\n", j2->pokemon[i].nome);
-        else printf("%s\n%s\n", j1->pokemon[i].nome, j2->pokemon[i].nome);
+    printf("\n\n");
+    for (int i = 0; i < j1->quantPokemon; i++)
+    {
+        printf("%s %d %d %d %s", j1->pokemon[i].nome, 
+            j1->pokemon[i].ataque, 
+            j1->pokemon[i].defesa, 
+            j1->pokemon[i].vida, 
+            j1->pokemon[i].tipo);
+            printf("\n");
+    }
+    printf("\njogador 2:");
+    for (int i = 0; i < j1->quantPokemon; i++)
+    {
+        printf("%s %d %d %d %s", j2->pokemon[i].nome, 
+            j2->pokemon[i].ataque, 
+            j2->pokemon[i].defesa, 
+            j2->pokemon[i].vida, 
+            j2->pokemon[i].tipo);
+        printf("\n");
+    }
+    printf("\n\n");
+    // printf("Pokemon derrotados: \n");
+    // for (int i = 0; i < j1->quantPokemon + j2->quantPokemon; i++) {
+    //     if (j1->pokemon[i].vida <= 0) printf("%s\n", j1->pokemon[i].nome);
+    //     else if (j2->pokemon[i].vida <= 0) printf("%s\n", j2->pokemon[i].nome);
+    // }
+
+    // printf("Pokemon sobreviventes: \n");
+    // for (int i = 0; i < j1->quantPokemon + j2->quantPokemon; i++) {
+    //     if (j1->pokemon[i].vida > 0) printf("%s\n", j1->pokemon[i].nome);
+    //     else if (j2->pokemon[i].vida > 0) printf("%s\n", j2->pokemon[i].nome);
+    // }
+
+    for (int i = 0; i < j1->quantPokemon; i++) {
+        free(j1->pokemon[i].nome);
+        free(j1->pokemon[i].tipo);
     }
 
-    printf("Pokemon sobreviventes: ");
-    for (int i = 0; i < j1->quantPokemon + j2->quantPokemon; i++) {
-        if (j1->pokemon[i].vida > 0) printf("%s\n", j1->pokemon[i].nome);
-        else if (j2->pokemon[i].vida > 0) printf("%s\n", j2->pokemon[i].nome);
-        else printf("%s\n%s\n", j1->pokemon[i].nome, j2->pokemon[i].nome);
+    for (int i = 0; i < j2->quantPokemon; i++) {
+        free(j2->pokemon[i].nome);
+        free(j2->pokemon[i].tipo);
     }
 
+    free(j1->pokemon);
+    free(j2->pokemon);
+
+    fclose(dados);
+    free(j1);
+    free(j2);
     return 0;
 }

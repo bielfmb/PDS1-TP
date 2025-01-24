@@ -4,7 +4,7 @@
 //cria o tipo jogador
 struct Jogador {
     int quantPokemon, numero;
-    struct Pokemon pokemon[100];
+    Pokemon *pokemon;
 };
 
 typedef struct Jogador Jogador;
