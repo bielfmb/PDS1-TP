@@ -46,7 +46,7 @@ int main() {
             j2->pokemon[i].tipo);
     }
 
-    mostrarResultado(j1, j2);
+    definirVencedor(j1, j2);
 
     printf("Pokemon sobreviventes: \n");
     mostrarSobreviventes(j1);
@@ -68,9 +68,9 @@ int main() {
 
     free(j1->pokemon);
     free(j2->pokemon);
-
-    fclose(dados);
     free(j1);
     free(j2);
+    fclose(dados);
+
     return 0;
 }

@@ -25,32 +25,30 @@ int efetividade(char* tipoAtacante, char* tipoDefensor) {
     return 0;
 }
 
-//Calcula o dano a partir do efeito, retorna 1 caso a defesa seja maior que o ataque
 float calcularDano(Pokemon *atacante, Pokemon *defensor, float efeito) {
     float dano = (atacante->ataque * efeito) - defensor->defesa;
     
-    if (dano <= 0.0) return 1.0;
+    if (dano < 1.0) return 1.0; // dano mínimo é 1
     return dano;
 }
 
-//Realiza uma batalha entre 2 pokemon dos jogadores
-void batalhar(Jogador *atacante, Jogador *defensor, int *numAtacante, int *numDefensor) {
+void atacar(Jogador *atacante, Jogador *defensor, int *numAtacante, int *numDefensor) {
     Pokemon *p1 = &atacante->pokemon[*numAtacante];
     Pokemon *p2 = &defensor->pokemon[*numDefensor];
 
-    //Se efetivo, o ataque pode tirar 20% a mais da vida do adversário
+    //Se efetivo, o ataque aumenta em 20%
     if (efetividade(p1->tipo, p2->tipo) == 1) {
         if ((p2->vida - calcularDano(p1, p2, 1.2)) <= 0.0) p2->vida = 0.0;
         else p2->vida -= calcularDano(p1, p2, 1.2);
     }
 
-    //Se não efetivo, o ataque pode tirar 20% a menos da vida do adversário
+    //Se não efetivo, o ataque diminui em 20% 
     else if (efetividade(p1->tipo, p2->tipo) == 2) {
         if ((p2->vida - calcularDano(p1, p2, 0.8)) <= 0) p2->vida = 0;
         else p2->vida -= calcularDano(p1, p2, 0.8);
     }
 
-    //Se não há relação, caso o ataque de p1 seja maior que a defesa de p2, esse valor é subtraído da vida de p2. Caso não, p2 perde 1 de vida
+    //Se não há relação, não há efeito
     else {
         if ((p2->vida - calcularDano(p1, p2, 1.0)) <= 0) p2->vida = 0;
         else p2->vida -= calcularDano(p1, p2, 1.0);
@@ -67,36 +65,33 @@ int contarPokemonVivos(Jogador *jogador) {
     return vivos;
 }
 
-void simularTurno(Jogador *atacante, Jogador *defensor, int *numAtacante, int *numDefensor) {
-    batalhar(atacante, defensor, numAtacante, numDefensor);
-
+void executarTurno(Jogador *atacante, Jogador *defensor, int *numAtacante, int *numDefensor) {
+    atacar(atacante, defensor, numAtacante, numDefensor);
+    
     if (defensor->pokemon[*numDefensor].vida <= 0) {
         printf("%s venceu %s.\n", atacante->pokemon[*numAtacante].nome, defensor->pokemon[*numDefensor].nome);
         if (contarPokemonVivos(defensor) <= 0) {
             return;
         }
         (*numDefensor)++;
-
-        //Caso o defensor tenha sido derrotado, é a vez do próximo do time defender 
-        simularTurno(atacante, defensor, numAtacante, numDefensor);
     }
 }
 
-void mostrarResultado(Jogador *jogador1, Jogador *jogador2) {
+void definirVencedor(Jogador *jogador1, Jogador *jogador2) {
     int p1 = 0, p2 = 0;
 
-    //Loop enquanto os jogadores ainda tiverem Pokémons 
+    //Loop enquanto os jogadores ainda tiverem Pokemon   
     while (contarPokemonVivos(jogador1) > 0 && contarPokemonVivos(jogador2) > 0) {
 
         // Turno do jogador 1 atacando o jogador 2
-        simularTurno(jogador1, jogador2, &p1, &p2);
+        executarTurno(jogador1, jogador2, &p1, &p2);
         if (contarPokemonVivos(jogador2) <= 0) {
             printf("Jogador 1 venceu!\n");
             break;
         }
 
         // Turno do jogador 2 atacando o jogador 1
-        simularTurno(jogador2, jogador1, &p2, &p1);
+        executarTurno(jogador2, jogador1, &p2, &p1);
         if (contarPokemonVivos(jogador1) <= 0) {
             printf("Jogador 2 venceu!\n");
             break;

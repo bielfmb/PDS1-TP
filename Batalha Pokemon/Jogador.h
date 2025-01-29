@@ -4,7 +4,6 @@
 #ifndef JOGADOR_H
 #define JOGADOR_H
 
-//cria o tipo jogador
 struct Jogador {
     int quantPokemon;
     Pokemon *pokemon;
